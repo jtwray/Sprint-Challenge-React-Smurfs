@@ -1,8 +1,9 @@
 import React, {Component} from "react";
 import axios from "axios";
-import {Route, Link} from "react-router-dom";
+import {Route, NavLink} from "react-router-dom";
 import SmurfForm from "./components/SmurfForm";
 import Smurfs from "./components/Smurfs";
+import "./App.css"
 
 class App extends Component {
 	constructor(props) {
@@ -10,7 +11,14 @@ class App extends Component {
 		this.state = {
 			smurfs: [],
 		};
-	}
+  }
+  updateSmurfs=( smurfs ) => {
+    this.setState( {
+     smurfs:smurfs
+   })
+ }
+
+
 	componentDidMount() {
 		axios
 			.get("http://localhost:3333/smurfs")
@@ -28,16 +36,27 @@ class App extends Component {
 	// You'll need to make sure you have the right properties on state and pass them down to props.
 	render() {
 		return (
-      <div className="App">
-    
-        <nav>
-        <Link to="/">Smurfs</Link>
-        <Link to="smurf-form">SmurfForm</Link>  
-        </nav>
-        
-        <Route path="/" exact render={(props) => <Smurfs {...props} smurfs={this.state.smurfs} />}
+			<div className="App">
+				<nav>
+					<NavLink to="/" activeClassName="activeNavButton">
+						Smurfs
+					</NavLink>
+					<NavLink to="smurf-form" activeClassName="activeNavButton">
+						SmurfForm
+					</NavLink>
+				</nav>
+
+				<Route
+					path="/"
+					exact
+					render={(props) => (
+						<Smurfs {...props} smurfs={this.state.smurfs} updateSmurfs={this.updateSmurfs}/>
+					)}
 				/>
-        <Route path="/smurf-form" exact component={SmurfForm} />
+				<Route path="/smurf-form" exact 	render={(props) => (
+          <SmurfForm {...props} smurfs={this.state.smurfs} updateSmurfs={this.updateSmurfs}/>
+        )}
+      />
 			</div>
 		);
 	}
